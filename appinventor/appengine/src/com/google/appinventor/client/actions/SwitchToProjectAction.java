@@ -13,6 +13,5 @@ public class SwitchToProjectAction implements Command {
   @Override
   public void execute() {
     Ode.getInstance().switchToProjectsView();
-    Ode.getInstance().getTopToolbar().updateFileMenuButtons(0);
   }
 }

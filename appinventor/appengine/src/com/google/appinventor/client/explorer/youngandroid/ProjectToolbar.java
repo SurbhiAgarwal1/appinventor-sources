@@ -7,6 +7,7 @@
 package com.google.appinventor.client.explorer.youngandroid;
 
 import com.google.appinventor.client.Ode;
+import static com.google.appinventor.client.Ode.MESSAGES;
 import com.google.appinventor.client.boxes.ProjectListBox;
 import com.google.appinventor.client.widgets.Toolbar;
 import com.google.gwt.core.client.GWT;
@@ -16,14 +17,15 @@ import com.google.gwt.user.client.ui.Label;
 
 import java.util.logging.Logger;
 
-
 /**
  * The project toolbar houses command buttons in the Young Android Project tab.
  *
  */
 public class ProjectToolbar extends Toolbar {
   private static final Logger LOG = Logger.getLogger(ProjectToolbar.class.getName());
-  interface ProjectToolbarUiBinder extends UiBinder<Toolbar, ProjectToolbar> {}
+
+  interface ProjectToolbarUiBinder extends UiBinder<Toolbar, ProjectToolbar> {
+  }
 
   private static final String WIDGET_NAME_NEW = "New";
   private static final String WIDGET_NAME_MOVE = "Move";
@@ -38,8 +40,10 @@ public class ProjectToolbar extends Toolbar {
   private final boolean isReadOnly;
   private final boolean isGalleryReadyOnly;
   private final boolean galleryEnabled;
-  @UiField protected Label projectLabel;
-  @UiField protected Label trashLabel;
+  @UiField
+  protected Label projectLabel;
+  @UiField
+  protected Label trashLabel;
 
   private static volatile boolean lockPublishButton = false; // To prevent double clicking
 
@@ -63,8 +67,7 @@ public class ProjectToolbar extends Toolbar {
   }
 
   protected void bindProjectToolbar() {
-    ProjectToolbar.ProjectToolbarUiBinder uibinder =
-        GWT.create(ProjectToolbar.ProjectToolbarUiBinder.class);
+    ProjectToolbar.ProjectToolbarUiBinder uibinder = GWT.create(ProjectToolbar.ProjectToolbarUiBinder.class);
     populateToolbar(uibinder.createAndBindUi(this));
   }
 
@@ -73,16 +76,16 @@ public class ProjectToolbar extends Toolbar {
     setButtonVisible(WIDGET_NAME_PROJECT, visible);
     setButtonVisible(WIDGET_NAME_RESTORE, visible);
     setButtonVisible(WIDGET_NAME_DELETE_FROM_TRASH, visible);
-    //TODO: This needs to be refactored to be configurable
+    // TODO: This needs to be refactored to be configurable
     trashLabel.setVisible(visible);
     updateButtons();
   }
 
   public void setProjectTabButtonsVisible(boolean visible) {
     setButtonVisible(WIDGET_NAME_NEW, visible);
-    setButtonVisible(WIDGET_NAME_TRASH,visible);
-    setButtonVisible(WIDGET_NAME_DELETE,visible);
-    //TODO: This needs to be refactored to be configurable
+    setButtonVisible(WIDGET_NAME_TRASH, visible);
+    setButtonVisible(WIDGET_NAME_DELETE, visible);
+    // TODO: This needs to be refactored to be configurable
     setButtonVisible("Folder", visible);
     setButtonVisible("ImportProject", visible);
     setButtonVisible("ImportTemplate", visible);
@@ -101,10 +104,10 @@ public class ProjectToolbar extends Toolbar {
   public void updateButtons() {
     LOG.info("updateButtons");
     ProjectList projectList = ProjectListBox.getProjectListBox().getProjectList();
-    int numAllItems = projectList.getMyProjectsCount();  // Get number of valid projects not in trash
+    int numAllItems = projectList.getMyProjectsCount(); // Get number of valid projects not in trash
     int numSelectedProjects = projectList.getSelectedProjectsCount();
     LOG.info("Set Project List variables");
-    if (isReadOnly) {           // If we are read-only, we disable all buttons
+    if (isReadOnly) { // If we are read-only, we disable all buttons
       setButtonEnabled(WIDGET_NAME_NEW, false);
       setButtonEnabled(WIDGET_NAME_DELETE, false);
       setButtonEnabled(WIDGET_NAME_RESTORE, false);
@@ -115,8 +118,12 @@ public class ProjectToolbar extends Toolbar {
     setButtonEnabled(WIDGET_NAME_DELETE, numSelectedProjects > 0);
     setButtonEnabled(WIDGET_NAME_DELETE_FROM_TRASH, numSelectedProjects > 0);
     setButtonEnabled(WIDGET_NAME_RESTORE, numSelectedProjects > 0);
-    LOG.info("Before updateMenuState");
     Ode.getInstance().getTopToolbar().updateMenuState(numSelectedProjects, numAllItems);
+
+    String exportProjectLabel = numSelectedProjects > 1
+        ? MESSAGES.exportSelectedProjectsMenuItem(numSelectedProjects)
+        : MESSAGES.exportProjectMenuItem();
+    setDropDownItemHtml("Export", "ExportProject", exportProjectLabel);
   }
 
   // If we started a project, then the start button was disabled (to avoid
