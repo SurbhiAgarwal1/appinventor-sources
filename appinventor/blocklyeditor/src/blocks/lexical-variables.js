@@ -785,7 +785,7 @@ Blockly.Blocks['local_mutatorarg'] = {
       .appendField(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_ARG_TITLE_NAME)
       .appendField(new Blockly.FieldTextInput(Blockly.Msg.LANG_VARIABLES_LOCAL_MUTATOR_ARG_DEFAULT_VARIABLE,
         function (newName) {
-          // [lyn, 10/27/13] check for duplicate names
+          // Check for duplicate names
           var sourceBlock = this.sourceBlock_;
           var container = sourceBlock.getContainerBlock();
           if (container) {
