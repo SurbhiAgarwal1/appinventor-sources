@@ -1163,7 +1163,7 @@ Blockly.ReplMgr.processRetvals = function(responses) {
 
 Blockly.ReplMgr.setDoitResult = function(block, value) {
     var oldPatt = /Do It Result:.*?\n---\n/m;
-    var patt = new RegExp(Blockly.Msg.DO_IT_RESULT + '.*?\n---\n');
+    var patt = new RegExp(Blockly.Msg.DO_IT_RESULT + '[\\s\\S]*?\\n---\\n');
     var result = Blockly.Msg.DO_IT_RESULT + ' ' + value + '\n---\n';
     var text = "";
     var icon = block.getIcon(Blockly.icons.CommentIcon.TYPE)
@@ -1179,7 +1179,12 @@ Blockly.ReplMgr.setDoitResult = function(block, value) {
         text = result + text;
     }
     block.setCommentText(text);
-    block.getIcon(Blockly.icons.CommentIcon.TYPE).setVisible(true);
+    // Force a resize of the bubble
+    icon = block.getIcon(Blockly.icons.CommentIcon.TYPE);
+    if (icon) {
+      icon.setVisible(false);
+      icon.setVisible(true);
+    }
 };
 
 Blockly.ReplMgr.startAdbDevice = function(rs, usb, loopback) {
